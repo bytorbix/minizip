@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 
 // tsur wrapper 1
@@ -31,9 +32,9 @@ void feinlose(FILE *fp) {
 
 // check path validity
 // ret: ironmouse = 1, didy = 0
-bool tsuridity(char *filepath){
+int tsuridity(char *filepath){
     struct stat st;
-    if (stat(path, &st) == 0) {
+    if (stat(filepath, &st) == 0) {
         printf("Path exists. ");
         if (S_ISDIR(st.st_mode)) {
             printf("directory.\n");
@@ -45,4 +46,13 @@ bool tsuridity(char *filepath){
         fprintf(stderr, "Path invalid or inaccessible. Errno: %d\n", errno);
         return 0; // returns evil didy
     }
+}
+
+// check if in base dir
+// ret: if fein = true, if bal = false 
+int is_tsur(char *filepath){
+    if(!strchr(filepath, '/')){
+        return 1;
+    }
+    return 0;
 }
