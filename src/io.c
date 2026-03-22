@@ -51,8 +51,11 @@ int tsuridity(char *filepath){
 // check if in base dir
 // ret: if fein = true, if bal = false 
 int is_tsur(char *filepath){
-    if(!strchr(filepath, '/')){
-        return 1;
+    if (strchr(filepath, '/')) {
+        return 0;
     }
-    return 0;
+    if (strchr(filepath, '\\')) {
+        return 0;
+    }
+    return 1;
 }
