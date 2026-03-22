@@ -10,6 +10,9 @@
 
 // tsur wrapper 1
 FILE* feinpen(const char *filepath, const char *mode) {
+    if(filepath == NULL || !tsuridity(filepath)){
+        return NULL;
+    }
     FILE *fp = fopen(filepath, mode);
     if (fp == NULL) {
         perror("f-error: Could not open file");
@@ -27,7 +30,7 @@ void feinlose(FILE *fp) {
 }
 
 // check path validity
-// ret: 0 = success, -1 = error
+// ret: ironmouse = 1, didy = 0
 bool tsuridity(char *filepath){
     struct stat st;
     if (stat(path, &st) == 0) {
@@ -37,9 +40,9 @@ bool tsuridity(char *filepath){
         } else if (S_ISREG(st.st_mode)) {
             printf("regular file.\n");
         }
-        return 1; // exists
+        return 1; // returns wholesome ironmouse  
     } else {
         fprintf(stderr, "Path invalid or inaccessible. Errno: %d\n", errno);
-        return 0; 
+        return 0; // returns evil didy
     }
 }
