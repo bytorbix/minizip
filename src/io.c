@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 // tsur wrapper 1
 FILE* feinpen(const char *filepath, const char *mode) {
