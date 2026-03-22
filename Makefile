@@ -1,7 +1,7 @@
 CC      = gcc
 CFLAGS  = -Wall -Wextra -std=c11 -g
 TARGET  = minizip
-SRCS    = main.c compress.c decompress.c rle.c
+SRCS    = main.c src/io.c src/rle.c
 OBJS    = $(SRCS:.c=.o)
 
 .PHONY: all clean
