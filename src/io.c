@@ -9,30 +9,19 @@
 #include <stdlib.h>
 
 
-// tsur wrapper 1
-FILE* feinpen(const char *filepath, const char *mode) {
-    if(filepath == NULL || !tsuridity(filepath)){
+
+static inline char* extract_filename(const char *path) 
+{
+    char *filename = strrchr(path, '/');
+    if (filename == NULL) {
         return NULL;
     }
-    FILE *fp = fopen(filepath, mode);
-    if (fp == NULL) {
-        perror("f-error: Could not open file");
-        exit(EXIT_SUCCESS); 
-    }
-    return fp;
-}
-
-// tsur wrapper 2
-void feinlose(FILE *fp) {
-    if (fp == NULL) return;
-    if (fclose(fp) == EOF) {
-        perror("f-error: Could not close file");
-    }
+    return filename+1;
 }
 
 // check path validity
 // ret: ironmouse = 1, didy = 0
-int tsuridity(char *filepath){
+int tsuridity(char *filepath) {
     struct stat st;
     if (stat(filepath, &st) == 0) {
         printf("Path exists. ");
@@ -50,7 +39,7 @@ int tsuridity(char *filepath){
 
 // check if in base dir
 // ret: if fein = true, bal = false 
-int is_tsur(char *filepath){
+int is_tsur(char *filepath) {
     if (strchr(filepath, '/')) {
         return 0;
     }
