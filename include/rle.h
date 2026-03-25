@@ -5,6 +5,6 @@
 #define INT_SIZE (4)
 
 struct Header {
-    const uint32_t magic;
-    uint8_t size;
+    uint32_t magic;
+    uint32_t size;
 };
