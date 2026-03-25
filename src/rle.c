@@ -7,29 +7,22 @@
 
 size_t rle_encode(uint8_t *in, uint32_t in_len, uint8_t **out)
 {
-    char *buf = malloc(in_len * 2 + 1);
+    uint8_t *buf = malloc(in_len * 2);
     if (!buf) return 0;
 
-    char charCount[maxChar];
     size_t i = 0, j = 0;
     int cLen = 0;
 
     for (i = 0; i < in_len; i++)
     {
         buf[j++] = in[i];
-
         cLen = 1;
         while (i + 1 < in_len && in[i] == in[i+1]) {
             cLen++;
             i++;
         }
-        sprintf(charCount, "%d", cLen);
-
-        for (int k = 0; charCount[k]; k++) {
-            buf[j++] = charCount[k];
-        }
+        buf[j++] = (uint8_t)cLen;
     }
-    buf[j] = '\0';
     *out = (uint8_t *)buf;
     return j;
 }
@@ -107,6 +100,7 @@ int tsur_compress(char *sfilepath, char *dfilepath) {
     // writing headers into file
     if (fwrite(&header, 1, sizeof(header), dfp) != sizeof(header)) {
         free(out);
+        free(in);
         fclose(dfp);
         return -1;
     }
@@ -114,9 +108,13 @@ int tsur_compress(char *sfilepath, char *dfilepath) {
     // writing compressed data into the file
     if (fwrite(out, 1, bytes_compressed, dfp) != bytes_compressed) {
         free(out);
+        free(in);
         fclose(dfp);
         return -1;
     }
+    free(out);
+    free(in);
+    fclose(dfp);
     return 1;
 
 }
@@ -171,7 +169,7 @@ int tsur_decompress(char *sfilepath, char *dfilepath) {
         fwrite(out, 1, out_len, dfp);
         free(out);
     }
+    free(in);    
     fclose(dfp);
-    free(in);
     return 1;
 }
