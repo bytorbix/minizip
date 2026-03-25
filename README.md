@@ -24,7 +24,7 @@ make
 ## make
 
 ```bash
-make clean
+make 
 ```
 
 ```bash
