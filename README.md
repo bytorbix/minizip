@@ -21,12 +21,7 @@ make
 ./minizip decompress input.txt output.tsur
 ```
 
-## make
-
-```bash
-make 
-```
-
+## Clean
 ```bash
 make clean
 ```
