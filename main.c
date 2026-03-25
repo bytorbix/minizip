@@ -19,6 +19,14 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
+        if (strcmp(action, "decompress") == 0) {
+            if (tsuridity(src_path) && tsuridity(dest_path)) {
+                int flag = tsur_decompress(src_path, dest_path);
+                if (flag == 1) {
+                    printf("%s was compressed into %s\n", extract_filename(src_path), extract_filename(dest_path));
+                }
+            }
+        }
     }
     else {
         printf("Invalid Argument!\n");
