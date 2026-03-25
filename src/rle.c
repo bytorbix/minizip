@@ -55,6 +55,11 @@ static void tsur_out(uint8_t *in, size_t in_len, uint8_t **out, size_t *out_len)
     *out = buffer;
 }
 
+int tsur_compress() {
+
+
+}
+
 
 // decompress the file
 // removes feinder, uses the tsur_out()™ method, so smart😻
@@ -62,39 +67,39 @@ static void tsur_out(uint8_t *in, size_t in_len, uint8_t **out, size_t *out_len)
 int tsur_decompress(char *sfilepath, char *dfilepath) {
     FILE *sfp = fopen(sfilepath, "rb");
     if (sfp == NULL) {
-        return 0;
+        return -1;
     }
     FILE *dfp = fopen(dfilepath, "wb");
     if (dfp == NULL) {
         fclose(sfp);
-        return 0;
+        return -1;
     }
 
     struct Header header;
     if (fread(&header, sizeof(struct Header), 1, sfp) != 1 || header.magic != MAGIC_HEADER) {
         fclose(sfp);
         fclose(dfp);
-        return 0;
+        return -1;
     }
 
     uint32_t in_len = 0;
     uint8_t *in = NULL;
     fseek(sfp, 0, SEEK_END);
-    in_len = ftell(sfp) - sizeof(struct Header);
+    in_len = ftell(sfp) - sizeof(struct Header); // telling file length to decode
     fseek(sfp, sizeof(struct Header), SEEK_SET);
 
     in = malloc(in_len);
     if (in == NULL) {
         fclose(sfp);
         fclose(dfp);
-        return 0;
+        return -1;
     }
 
     if (fread(in, 1, in_len, sfp) != in_len) {
         free(in);
         fclose(sfp);
         fclose(dfp);
-        return 0;
+        return -1;
     }
     fclose(sfp);
 
