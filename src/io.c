@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <limits.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
@@ -7,34 +8,22 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "io.h"
 
 
 
-static inline char* extract_filename(const char *path) 
-{
-    char *filename = strrchr(path, '/');
-    if (filename == NULL) {
-        return NULL;
-    }
-    return filename+1;
-}
-
-// check path validity
+// check path string validity (no filesystem access)
 // ret: ironmouse = 1, didy = 0
 int tsuridity(char *filepath) {
-    struct stat st;
-    if (stat(filepath, &st) == 0) {
-        printf("Path exists. ");
-        if (S_ISDIR(st.st_mode)) {
-            printf("directory.\n");
-        } else if (S_ISREG(st.st_mode)) {
-            printf("regular file.\n");
-        }
-        return 1; // returns wholesome ironmouse  
-    } else {
-        fprintf(stderr, "Path invalid or inaccessible. Errno: %d\n", errno);
-        return 0; // returns evil didy
+    if (filepath == NULL || filepath[0] == '\0') {
+        fprintf(stderr, "Path is NULL or empty.\n");
+        return 0;
     }
+    if (strlen(filepath) >= PATH_MAX) {
+        fprintf(stderr, "Path exceeds maximum length.\n");
+        return 0;
+    }
+    return 1;
 }
 
 // check if in base dir

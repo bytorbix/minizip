@@ -5,10 +5,10 @@
 #include "io.h"
 #define maxChar 100
 
-size_t *rle_encode(uint8_t *in, uint32_t in_len, uint8_t **out)
+size_t rle_encode(uint8_t *in, uint32_t in_len, uint8_t **out)
 {
     char *buf = malloc(in_len * 2 + 1);
-    if (!buf) return -1;
+    if (!buf) return 0;
 
     char charCount[maxChar];
     size_t i = 0, j = 0;
@@ -70,12 +70,16 @@ int tsur_compress(char *sfilepath, char *dfilepath) {
     char *filename = extract_filename(sfilepath);
     struct Header header;
     header.magic = MAGIC_HEADER;
-    header.filename = filename;
+    strncpy(header.filename, filename, MAX_FILENAME - 1);
+    header.filename[MAX_FILENAME - 1] = '\0';
+    
     
     uint32_t in_len = 0;
     uint8_t *in = NULL;
     fseek(sfp, 0, SEEK_END);
     in_len = ftell(sfp); // length of the file to be compressed
+    header.size = in_len;
+    fseek(sfp, 0, SEEK_SET);
 
     in = malloc(in_len);
     if (in == NULL) {
@@ -93,14 +97,22 @@ int tsur_compress(char *sfilepath, char *dfilepath) {
     fclose(sfp);
 
     uint8_t *out = NULL;
-    size_t bytes_compressed = rle_encode(in, &in_len, &out);
-    if (bytes_compressed == -1) {
+    size_t bytes_compressed = rle_encode(in, in_len, &out);
+    if (bytes_compressed == 0) {
         fclose(dfp);
         free(in);
         return -1;
     }
 
-    if (fwrite(out, 1, bytes_compressed, dfp) != byte_compressed) {
+    // writing headers into file
+    if (fwrite(&header, 1, sizeof(header), dfp) != sizeof(header)) {
+        free(out);
+        fclose(dfp);
+        return -1;
+    }
+
+    // writing compressed data into the file
+    if (fwrite(out, 1, bytes_compressed, dfp) != bytes_compressed) {
         free(out);
         fclose(dfp);
         return -1;
