@@ -22,3 +22,5 @@ FILE* feinpen(const char *filepath, const char *mode);
 void feinlose(FILE *fp);
 int tsuridity(char *filepath);
 int is_tsur(char *filepath);
+char *make_tsur(char *filepath);
+char *kill_tsur(char *filepath);

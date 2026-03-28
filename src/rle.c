@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include "rle.h"
 #include "io.h"
 #define maxChar 100
@@ -17,7 +18,7 @@ size_t rle_encode(uint8_t *in, uint32_t in_len, uint8_t **out)
     {
         buf[j++] = in[i];
         cLen = 1;
-        while (i + 1 < in_len && in[i] == in[i+1]) {
+        while (i + 1 < in_len && in[i] == in[i+1] && cLen < 255) {
             cLen++;
             i++;
         }
@@ -62,8 +63,11 @@ int tsur_compress(char *sfilepath, char *dfilepath) {
 
     char *filename = extract_filename(sfilepath);
     struct Header header;
+    memset(&header, 0, sizeof(struct Header));
     header.magic = MAGIC_HEADER;
-    strncpy(header.filename, filename, MAX_FILENAME - 1);
+    if (filename != NULL) {
+        strncpy(header.filename, filename, MAX_FILENAME - 1);
+    }
     header.filename[MAX_FILENAME - 1] = '\0';
     
     
@@ -93,6 +97,7 @@ int tsur_compress(char *sfilepath, char *dfilepath) {
     size_t bytes_compressed = rle_encode(in, in_len, &out);
     if (bytes_compressed == 0) {
         fclose(dfp);
+        free(out);
         free(in);
         return -1;
     }
