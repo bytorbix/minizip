@@ -72,13 +72,13 @@ char *kill_tsur(char *filepath) {
 int tsuridity(char *filepath) {
     if (filepath == NULL || filepath[0] == '\0') {
         fprintf(stderr, "Path is NULL or empty.\n");
-        return 0;
+        return 0; // fein didy
     }
     if (strlen(filepath) >= PATH_MAX) {
         fprintf(stderr, "Path exceeds maximum length.\n");
-        return 0;
+        return 0; // fein didy
     }
-    return 1;
+    return 1; // wholesome ironmouse 
 }
 
 // check if in base dir
